@@ -1,0 +1,29 @@
+{
+  "name": "playwrightframework",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "allurereport": "npx allure open ./allure-report",
+    "bookertests": "cross-env PROJECT=BOOKER AUTOMATION_TYPE=API playwright test --config=api.config.js",
+    "apitests": "cross-env PROJECT=REQRES AUTOMATION_TYPE=API EVIRONMENT=QA playwright test --config=playwright.config.js",
+    "resttests": "cross-env PROJECT=BOOKER AUTOMATION_TYPE=API EVIRONMENT=QA playwright test --config=playwright.config.js",
+    "demotests": "cross-env PROJECT=DEMO AUTOMATION_TYPE=API EVIRONMENT=QA playwright test --config=playwright.config.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@dotenvx/dotenvx": "^1.21.1",
+    "@playwright/test": "^1.48.2",
+    "@types/node": "^22.8.5",
+    "@zerostep/playwright": "^0.1.5",
+    "allure-commandline": "^2.32.0",
+    "allure-playwright": "^3.0.5",
+    "cross-env": "^7.0.3",
+    "dotenv-cli": "^7.4.2"
+  },
+  "dependencies": {
+    "playwrightframework": "file:"
+  }
+}

@@ -1,0 +1,1 @@
+{"total":2,"items":[{"uid":"178045cb26567cb765712600047feb51","name":"api.spec.js","statistic":{"failed":0,"broken":0,"skipped":0,"passed":8,"unknown":0,"total":8}},{"uid":"f0a4bf269bb282bc0c3726b352e58c2a","name":"crud\\ProjectPost.spec.js","statistic":{"failed":0,"broken":0,"skipped":0,"passed":5,"unknown":0,"total":5}}]}
