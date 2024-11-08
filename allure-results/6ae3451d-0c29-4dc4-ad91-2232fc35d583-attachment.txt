@@ -1,6 +1,0 @@
-6
-{
-  name: 'Name Update',
-  job: 'Job Update',
-  updatedAt: '2024-11-04T12:43:51.734Z'
-}

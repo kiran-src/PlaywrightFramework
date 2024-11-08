@@ -1,6 +1,0 @@
-key
-data
-act
-undefined
-exp
-{ name: 'Steve', job: 'Welder' }

@@ -12,8 +12,8 @@ test.beforeAll(async()=>{
 })
 
 getTest('Demo Get Response', auth, 'users/2', 200, {support: {
-    url: 'https://reqres.in/#support-heading',
-    text: 'To keep ReqRes free, contributions towards server costs are appreciated!'
+    url: 'https://contentcaddy.io?utm_source=reqres&utm_medium=json&utm_campaign=referral',
+    text: 'Tired of writing endless social media content? Let Content Caddy generate it for you.'
   }})
 
 postTest('Demo Post Response', auth, 'user', {

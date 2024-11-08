@@ -1,5 +1,0 @@
-arguments
-6
-response
-true
-false

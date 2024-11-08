@@ -1,6 +1,0 @@
-arguments
-6
-response
-false
-false
-{ id: '120', createdAt: '2024-11-04T10:00:07.916Z' }

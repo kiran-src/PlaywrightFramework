@@ -26,6 +26,8 @@ module.exports = defineConfig({
   
   globalTeardown: require.resolve('./global-teardown.js'),
 
+  globalSetup: require.resolve('./global-setup.js'),
+
   use: {
     
     baseURL: selectedUrl,
