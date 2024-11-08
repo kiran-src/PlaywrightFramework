@@ -27,7 +27,8 @@ function apiTest(description, auth, url, deliveredPayload, apiType, expectedStat
         console.log('token')
         console.log(auth)
         const uncodedData={data:deliveredPayload}
-    const formData = new URLSearchParams(uncodedData).toString();
+        // const formData = new URLSearchParams(uncodedData).toString();
+        const formData = deliveredPayload;
         switch (apiType){
             case 'get':
                 response=await request.get(url, {headers: {
@@ -46,7 +47,7 @@ function apiTest(description, auth, url, deliveredPayload, apiType, expectedStat
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${auth}`
                 }, 
-                data: deliveredPayload
+                data: formData
             });
             }
                 break;
@@ -61,7 +62,7 @@ function apiTest(description, auth, url, deliveredPayload, apiType, expectedStat
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${auth}`
                 }, 
-                data: deliveredPayload
+                data: formData
             });
             }
                 break;
@@ -76,7 +77,7 @@ function apiTest(description, auth, url, deliveredPayload, apiType, expectedStat
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${auth}`
                 }, 
-                data: deliveredPayload
+                data: formData
             });
             }
                 break;
@@ -91,17 +92,24 @@ function apiTest(description, auth, url, deliveredPayload, apiType, expectedStat
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${auth}`
                 }, 
-                data: deliveredPayload
+                data: formData
             });
             }
                  break;
+                 default:
+                    response=await request.get(url, {headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${auth}`
+                    }, 
+                    data: formData
+                });
         }
         
         expect(response.status()).toBe(expectedStatus);
         if (expectedPayload !== undefined) {
             const responseText = await response.text();
             const responseBody = responseText ? JSON.parse(responseText) : {};
-            assertValue(expectedPayload, responseBody)
+            assertPayload(expectedPayload, responseBody)
             return responseBody
     }
 else{
@@ -123,24 +131,35 @@ function isNested(obj) {
     return false; // No nested objects found
 }
 
-function assertValue(expectedPayload, actualPayload){
+function assertPayload(expectedPayload, actualPayload){
     for (let key in expectedPayload) {
-        // console.log('key')
-        // console.log(key)
-        // console.log('act')
-        // console.log(actualPayload[key])
-        // console.log('exp')
-        // console.log(expectedPayload[key])
-        // console.log('nest')
-        // console.log(isNested(expectedPayload[key]))
         expect(actualPayload[key]).toBeDefined()
         if(isNested(expectedPayload[key])){
-            assertValue(expectedPayload[key], actualPayload[key])
+            assertPayload(expectedPayload[key], actualPayload[key])
         }else if (typeof expectedPayload[key] === 'object' && expectedPayload[key] !== null && !Array.isArray(expectedPayload[key])){
             for (let key in expectedPayload) {
-                expect(expectedPayload[key]).toStrictEqual(actualPayload[key])
+                assertValue(expectedPayload[key], actualPayload[key])
             }
         }else{
-            expect(expectedPayload[key]).toStrictEqual(actualPayload[key])
+            assertValue(expectedPayload[key], actualPayload[key])
         }
 }}
+
+function assertValue(expectedValue, actualValue){
+    switch (expectedValue){
+        case 'Assert-Defined':
+            expect(actualValue).toBeDefined()
+        break
+        case 'Assert-Truth':
+            expect(actualValue).toBeTruthy()
+        break
+        case 'Assert-False':
+            expect(actualValue).toBeFalsy()
+        break
+        case 'Assert-Empty':
+            expect(actualValue).toBeEmpty()
+        break
+        default:
+            expect(actualValue).toStrictEqual(expectedValue)
+    }
+}
