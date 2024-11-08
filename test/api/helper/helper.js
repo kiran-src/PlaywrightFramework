@@ -1,48 +1,50 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
-const { getToken } = require('./tokenStorage');
-const fs = require('fs'); // Import the fs module
-const token=1
-export async function getTest(description, url, expectedStatus, expectedPayload){
-    apiTest(description, url, {}, 'get', expectedStatus, expectedPayload)
+// const { getToken } = require('./tokenStorage');
+export async function getTest(description, auth, url, expectedStatus, expectedPayload){
+    apiTest(description, auth, url, {}, 'get', expectedStatus, expectedPayload)
 }
 
-export async function postTest(description, url, deliveredPayload, expectedStatus, expectedPayload){
-        apiTest(description, url, deliveredPayload, 'post', expectedStatus, expectedPayload)
+export async function postTest(description, auth, url, deliveredPayload, expectedStatus, expectedPayload){
+        apiTest(description, auth, url, deliveredPayload, 'post', expectedStatus, expectedPayload)
 }
 
-export async function putTest(description, url, deliveredPayload, expectedStatus, expectedPayload){
-        apiTest(description, url, deliveredPayload, 'put', expectedStatus, expectedPayload)
+export async function putTest(description, auth, url, deliveredPayload, expectedStatus, expectedPayload){
+        apiTest(description, auth, url, deliveredPayload, 'put', expectedStatus, expectedPayload)
 }
 
-export async function patchTest(description, url, deliveredPayload, expectedStatus, expectedPayload){
-        apiTest(description, url, deliveredPayload, 'patch', expectedStatus, expectedPayload)
+export async function patchTest(description, auth, url, deliveredPayload, expectedStatus, expectedPayload){
+        apiTest(description, auth, url, deliveredPayload, 'patch', expectedStatus, expectedPayload)
 }
 
-export async function deleteTest(description, url, deliveredPayload, expectedStatus, expectedPayload){
-        apiTest(description, url, deliveredPayload, 'delete', expectedStatus, expectedPayload)
+export async function deleteTest(description, auth, url, deliveredPayload, expectedStatus, expectedPayload){
+        apiTest(description, auth, url, deliveredPayload, 'delete', expectedStatus, expectedPayload)
 }
 
-function apiTest(description, url, deliveredPayload, apiType, expectedStatus, expectedPayload) {
+function apiTest(description, auth, url, deliveredPayload, apiType, expectedStatus, expectedPayload) {
     test(description, async ({ request }) => {
         var response = null
+        console.log('token')
+        console.log(auth)
+        const uncodedData={data:deliveredPayload}
+    const formData = new URLSearchParams(uncodedData).toString();
         switch (apiType){
             case 'get':
                 response=await request.get(url, {headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${getToken()}`
+                    'Authorization': `Bearer ${auth}`
                 }});
                 break;
             case 'post':
                 if(deliveredPayload.length === 0){
                 response=await request.post(url, {headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${getToken()}`
+                    'Authorization': `Bearer ${auth}`
                 }});
             } else{
                 response=await request.post(url, {headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${getToken()}`
+                    'Authorization': `Bearer ${auth}`
                 }, 
                 data: deliveredPayload
             });
@@ -52,12 +54,12 @@ function apiTest(description, url, deliveredPayload, apiType, expectedStatus, ex
                 if(deliveredPayload.length === 0){
                 response=await request.put(url, {headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${getToken()}`
+                    'Authorization': `Bearer ${auth}`
                 }});
             } else{
                 response=await request.put(url, {headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${getToken()}`
+                    'Authorization': `Bearer ${auth}`
                 }, 
                 data: deliveredPayload
             });
@@ -67,12 +69,12 @@ function apiTest(description, url, deliveredPayload, apiType, expectedStatus, ex
                 if(deliveredPayload.length === 0){
                 response=await request.patch(url, {headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${getToken()}`
+                    'Authorization': `Bearer ${auth}`
                 }});
             } else{
                 response=await request.patch(url, {headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${getToken()}`
+                    'Authorization': `Bearer ${auth}`
                 }, 
                 data: deliveredPayload
             });
@@ -82,12 +84,12 @@ function apiTest(description, url, deliveredPayload, apiType, expectedStatus, ex
                 if(deliveredPayload.length === 0){
                 response=await request.delete(url, {headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${getToken()}`
+                    'Authorization': `Bearer ${auth}`
                 }});
             } else{
                 response=await request.delete(url, {headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${getToken()}`
+                    'Authorization': `Bearer ${auth}`
                 }, 
                 data: deliveredPayload
             });
@@ -100,7 +102,11 @@ function apiTest(description, url, deliveredPayload, apiType, expectedStatus, ex
             const responseText = await response.text();
             const responseBody = responseText ? JSON.parse(responseText) : {};
             assertValue(expectedPayload, responseBody)
-    }});
+            return responseBody
+    }
+else{
+    return {}
+}});
 }
 
 function isNested(obj) {

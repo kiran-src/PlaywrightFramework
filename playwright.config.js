@@ -4,7 +4,6 @@ require('dotenv').config()
 const { defineConfig, devices } = require('@playwright/test');
 const selectedUrl = process.env["BASE_URL_"+process.env.PROJECT]
 const selectedDirectory = process.env["DIRECTORY_"+process.env.PROJECT]
-const automationType=process.env.AUTOMATION_TYPE
 const envType='qa'
 
 
