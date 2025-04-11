@@ -1,6 +1,7 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
-// const { getToken } = require('./tokenStorage');
+const { setData, getData } = require('./payloadData');
+var responseBody = null
 export async function getTest(description, auth, url, expectedStatus, expectedPayload){
     apiTest(description, auth, url, {}, 'get', expectedStatus, expectedPayload)
 }
@@ -21,11 +22,9 @@ export async function deleteTest(description, auth, url, deliveredPayload, expec
         apiTest(description, auth, url, deliveredPayload, 'delete', expectedStatus, expectedPayload)
 }
 
-function apiTest(description, auth, url, deliveredPayload, apiType, expectedStatus, expectedPayload) {
+async function apiTest(description, auth, url, deliveredPayload, apiType, expectedStatus, expectedPayload) {
     test(description, async ({ request }) => {
         var response = null
-        console.log('token')
-        console.log(auth)
         const uncodedData={data:deliveredPayload}
         // const formData = new URLSearchParams(uncodedData).toString();
         const formData = deliveredPayload;
@@ -108,13 +107,16 @@ function apiTest(description, auth, url, deliveredPayload, apiType, expectedStat
         expect(response.status()).toBe(expectedStatus);
         if (expectedPayload !== undefined) {
             const responseText = await response.text();
-            const responseBody = responseText ? JSON.parse(responseText) : {};
+            responseBody = responseText ? JSON.parse(responseText) : {};
             assertPayload(expectedPayload, responseBody)
-            return responseBody
+            setData(responseText)
     }
 else{
-    return {}
-}});
+    responseBody=null
+}
+
+});
+// return responseBody
 }
 
 function isNested(obj) {
